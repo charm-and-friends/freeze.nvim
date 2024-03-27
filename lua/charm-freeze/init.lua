@@ -10,8 +10,8 @@ M.allowed_opts = {
 	command = "string",
 	output = { "string", "function" },
 	window = "boolean",
-	padding = { "table", "string" },
-	margin = { "table", "string" },
+	padding = { "string", "table" },
+	margin = { "string", "table" },
 	background = "string",
 	theme = "string",
 	line_numbers = "boolean",
@@ -61,10 +61,18 @@ end
 M.get_arguments = function(args, options)
 	local cmd = {}
 	local value = nil
+
 	table.insert(cmd, options.command)
+
 	for k, v in pairs(options) do
-		if k ~= "command" then
+		-- handle margin and padding sepreatly as tables
+		if k == "margin" or k == "padding" then
+			if type(v) == "table" then
+				table.insert(cmd, "--" .. k)
+				table.insert(cmd, table.concat(v, ","))
+			end
 			table.insert(cmd, "--" .. string.gsub(k, "_", "-"))
+			-- if the value is a function, call it with the args, otherwise just use the value
 			if type(v) == "function" then
 				value = v(args)
 			else
@@ -73,6 +81,7 @@ M.get_arguments = function(args, options)
 			table.insert(cmd, value)
 		end
 	end
+
 	return cmd
 end
 
