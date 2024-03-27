@@ -71,6 +71,8 @@ M.get_arguments = function(args, options)
 				table.insert(cmd, "--" .. k)
 				table.insert(cmd, table.concat(v, ","))
 			end
+		-- handle anything that is not the command or language option
+		elseif k ~= "command" and k ~= "language" then
 			table.insert(cmd, "--" .. string.gsub(k, "_", "-"))
 			-- if the value is a function, call it with the args, otherwise just use the value
 			if type(v) == "function" then
@@ -117,10 +119,16 @@ M.start = function(args, options)
 	-- parse buffer into lines, based on arguments from neovim, reshapes cmdline
 	lines, base_cmdline = M.format_lines(base_cmdline, args)
 
-	-- try to get the language from neovim's buffer filetype
 	local cmd = vim.tbl_extend("error", base_cmdline, {})
+
+	-- if the user gave us a language lets use it
+	-- else try to get the language from neovim's buffer filetype
 	table.insert(cmd, "--language")
-	table.insert(cmd, vim.bo.filetype)
+	if options.language then
+		table.insert(cmd, options.language)
+	else
+		table.insert(cmd, vim.bo.filetype)
+	end
 
 	-- run the command and get the output
 	local ret = vim.fn.system(cmd, lines)
