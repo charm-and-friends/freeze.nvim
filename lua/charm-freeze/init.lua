@@ -81,6 +81,12 @@ M.get_arguments = function(args, options)
 				table.insert(cmd, "--" .. k)
 				table.insert(cmd, table.concat(v, ","))
 			end
+		-- table options ('border', 'font', 'shadow')
+		elseif type(v) == 'table' and not vim.tbl_isarray(v) then
+			for _k, _v in pairs(v) do
+				table.insert(cmd, '--' .. k .. '.' .. string.gsub(_k, '_', '-'))
+				table.insert(cmd, _v)
+			end
 		-- handle anything that is not the command or language option
 		elseif k ~= "command" and k ~= "language" then
 			table.insert(cmd, "--" .. string.gsub(k, "_", "-"))
