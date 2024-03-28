@@ -5,8 +5,8 @@ local child = MiniTest.new_child_neovim()
 local T = MiniTest.new_set({
   hooks = {
     pre_case = function()
-      child.restart()
-      child.lua([[P = require('.///////lua/charm-freeze')]])
+      child.restart({ "-u", "tests/init.lua" })
+      child.lua([[P = require('charm-freeze')]])
     end,
     -- Stop once all test cases are finished
     post_once = child.stop,
