@@ -1,0 +1,29 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Neovim
+        shell: bash
+        run: |
+          mkdir -p /tmp/nvim
+          wget -q https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage -O /tmp/nvim/nvim.appimage
+          cd /tmp/nvim
+          chmod a+x ./nvim.appimage
+          ./nvim.appimage --appimage-extract
+          echo "/tmp/nvim/squashfs-root/usr/bin/" >> $GITHUB_PATH
+
+      - name: Run Tests
+        run: |
+          nvim --version
+          [ ! -d tests ] && exit 0
+          tests/./run
