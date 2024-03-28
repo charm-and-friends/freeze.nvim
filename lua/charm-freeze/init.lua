@@ -1,5 +1,13 @@
 local M = {}
 
+local function is_array(...)
+	if vim.fn.has('nvim-0.10') == 1 then
+		return vim.tbl_isarray(...)
+	else
+		return vim.tbl_islist(...)
+	end
+end
+
 -- We require command to give, this also allows us to have a custom command
 M.required_options = {
 	command = "freeze",
@@ -49,7 +57,7 @@ M.parse_options = function(opts)
 	if M.allowed_opts then
 		for k, v in pairs(opts) do
 			local k_type = M.allowed_opts[k]
-			if type(k_type) == 'table' and not vim.tbl_isarray(k_type) then
+			if type(k_type) == 'table' and not is_array(k_type) then
 				vim.validate({ [k] = { v, 'table' } })
 				for _k, _v in pairs(v) do
 					vim.validate({
@@ -80,6 +88,12 @@ M.get_arguments = function(args, options)
 			if type(v) == "table" then
 				table.insert(cmd, "--" .. k)
 				table.insert(cmd, table.concat(v, ","))
+			end
+		-- table options ('border', 'font', 'shadow')
+		elseif type(v) == 'table' and not is_array(v) then
+			for _k, _v in pairs(v) do
+				table.insert(cmd, '--' .. k .. '.' .. string.gsub(_k, '_', '-'))
+				table.insert(cmd, _v)
 			end
 		-- handle anything that is not the command or language option
 		elseif k ~= "command" and k ~= "language" then
