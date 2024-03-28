@@ -48,9 +48,19 @@ M.parse_options = function(opts)
 	-- Ensure that the user has not provided any options that are not allowed
 	if M.allowed_opts then
 		for k, v in pairs(opts) do
-			vim.validate({
-				[k] = { v, M.allowed_opts[k] },
-			})
+			local k_type = M.allowed_opts[k]
+			if type(k_type) == 'table' and not vim.tbl_isarray(k_type) then
+				vim.validate({ [k] = { v, 'table' } })
+				for _k, _v in pairs(v) do
+					vim.validate({
+						[_k] = { _v, k_type[_k] }
+					})
+				end
+			else
+				vim.validate({
+					[k] = { v, k_type },
+				})
+			end
 		end
 	end
 
