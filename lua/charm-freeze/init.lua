@@ -16,6 +16,7 @@ M.required_options = {
 -- We allow the user to provide custom options, if none are provided the command will use its default args
 M.allowed_opts = {
   command = "string",
+  config = "string",
   output = { "string", "function" },
   window = "boolean",
   padding = { "string", "table" },
@@ -57,6 +58,9 @@ M.parse_options = function(opts)
   if M.allowed_opts then
     for k, v in pairs(opts) do
       local k_type = M.allowed_opts[k]
+
+      -- Check if the key is allowed
+      -- We need to handle the tables which are not arrays diffrently
       if type(k_type) == "table" and not is_array(k_type) then
         vim.validate({ [k] = { v, "table" } })
         for _k, _v in pairs(v) do
