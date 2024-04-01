@@ -27,7 +27,7 @@
 }
 ```
 
-For a full list of options, see [here](https://github.com/isabelroses/charm-freeze.nvim/blob/c0e678e851be59d51385a9b1235559f44321f0ba/lua/charm-freeze/init.lua#L9-L35).
+For a full list of options, see [here](https://github.com/isabelroses/charm-freeze.nvim/blob/353992ad1959fdfd720e2f069f3d2f08f6ce639b/lua/charm-freeze/init.lua#L17-44).
 
 You might also want to add a keybinding to call the `Freeze` command.
 
