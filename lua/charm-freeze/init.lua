@@ -93,6 +93,9 @@ M.get_arguments = function(args, options)
         table.insert(cmd, "--" .. k)
         table.insert(cmd, table.concat(v, ","))
       end
+    -- handle --show-line-numbers
+    elseif k == "line_numbers" then
+      table.insert(cmd, '--show-line-numbers')
     -- table options ('border', 'font', 'shadow')
     elseif type(v) == "table" and not is_array(v) then
       for _k, _v in pairs(v) do
