@@ -79,20 +79,20 @@ M.parse_options = function(opts)
   return options
 end
 
-local function populate_cmd(cmd, args, tbl)
+local function populate_cmd(cmd, args, tbl, prefix)
   for k,v in pairs(tbl) do
     -- handle margin and padding separately as tables
     if k == "margin" or k == "padding" then
       if type(v) == "table" then
-        table.insert(cmd, "--" .. k)
+        table.insert(cmd, "--" .. prefix .. k)
         table.insert(cmd, table.concat(v, ","))
       end
     -- table options ('border', 'font', 'shadow')
     elseif type(v) == "table" and not is_array(v) then
-      populate_cmd(cmd, args, v)
+      populate_cmd(cmd, args, v, prefix .. k .. '.')
     -- handle anything that is not the command or language option
     elseif k ~= "command" and k ~= "language" then
-      table.insert(cmd, "--" .. string.gsub(k, "_", "-"))
+      table.insert(cmd, "--" .. prefix .. string.gsub(k, "_", "-"))
 
       -- if the value is a function, call it with the args, otherwise just use the value
       local value = nil
@@ -115,7 +115,7 @@ M.get_arguments = function(args, options)
   local cmd = {}
 
   table.insert(cmd, options.command)
-  populate_cmd(cmd, args, options)
+  populate_cmd(cmd, args, options, '')
 
   return cmd
 end
