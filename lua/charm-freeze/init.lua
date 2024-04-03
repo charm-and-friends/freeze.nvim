@@ -97,7 +97,13 @@ M.get_arguments = function(args, options)
     elseif type(v) == "table" and not is_array(v) then
       for _k, _v in pairs(v) do
         table.insert(cmd, "--" .. k .. "." .. string.gsub(_k, "_", "-"))
-        table.insert(cmd, _v)
+        if type(_v) == "boolean" then
+          if _v then
+            table.insert(cmd)
+          end
+        else
+          table.insert(cmd, _v)
+        end
       end
     -- handle boolean options, they are just flags with no value
     elseif type(v) == "boolean" then
