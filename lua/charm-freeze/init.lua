@@ -102,6 +102,11 @@ M.get_arguments = function(args, options)
         table.insert(cmd, "--" .. k .. "." .. string.gsub(_k, "_", "-"))
         table.insert(cmd, _v)
       end
+    -- handle boolean options, they are just flags with no value
+    elseif type(v) == "boolean" then
+      if v then
+        table.insert(cmd, "--" .. string.gsub(k, "_", "-"))
+      end
     -- handle anything that is not the command or language option
     elseif k ~= "command" and k ~= "language" then
       table.insert(cmd, "--" .. string.gsub(k, "_", "-"))
