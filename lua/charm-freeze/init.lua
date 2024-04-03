@@ -23,7 +23,7 @@ M.allowed_opts = {
   margin = { "string", "table" },
   background = "string",
   theme = "string",
-  line_numbers = "boolean",
+  show_line_numbers = "boolean",
   line_height = "number",
   language = "string",
   font = {
@@ -79,49 +79,43 @@ M.parse_options = function(opts)
   return options
 end
 
--- Generate the command line arguments
-M.get_arguments = function(args, options)
-  local cmd = {}
-  local value = nil
-
-  table.insert(cmd, options.command)
-
-  for k, v in pairs(options) do
-    -- handle margin and padding sepreatly as tables
+local function populate_cmd(cmd, args, tbl, prefix)
+  for k,v in pairs(tbl) do
+    -- handle margin and padding separately as tables
     if k == "margin" or k == "padding" then
       if type(v) == "table" then
-        table.insert(cmd, "--" .. k)
+        table.insert(cmd, "--" .. prefix .. k)
         table.insert(cmd, table.concat(v, ","))
       end
     -- table options ('border', 'font', 'shadow')
     elseif type(v) == "table" and not is_array(v) then
-      for _k, _v in pairs(v) do
-        table.insert(cmd, "--" .. k .. "." .. string.gsub(_k, "_", "-"))
-        if type(_v) == "boolean" then
-          if _v then
-            table.insert(cmd)
-          end
-        else
-          table.insert(cmd, _v)
-        end
-      end
-    -- handle boolean options, they are just flags with no value
-    elseif type(v) == "boolean" then
-      if v then
-        table.insert(cmd, "--" .. string.gsub(k, "_", "-"))
-      end
+      populate_cmd(cmd, args, v, prefix .. k .. '.')
     -- handle anything that is not the command or language option
     elseif k ~= "command" and k ~= "language" then
-      table.insert(cmd, "--" .. string.gsub(k, "_", "-"))
+      table.insert(cmd, "--" .. prefix .. string.gsub(k, "_", "-"))
+
       -- if the value is a function, call it with the args, otherwise just use the value
+      local value = nil
       if type(v) == "function" then
         value = v(args)
       else
         value = v
       end
-      table.insert(cmd, value)
+
+      -- Don't append the value if it's a boolean option.
+      if type(v) ~= "boolean" then
+        table.insert(cmd, value)
+      end
     end
   end
+end
+
+-- Generate the command line arguments
+M.get_arguments = function(args, options)
+  local cmd = {}
+
+  table.insert(cmd, options.command)
+  populate_cmd(cmd, args, options, '')
 
   return cmd
 end

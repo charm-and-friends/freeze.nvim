@@ -35,7 +35,7 @@ end
 
 T["invalid_options.boolean"] = function()
   e(function()
-    child.lua([[P.setup({line_numbers = "chesee"})]])
+    child.lua([[P.setup({show_line_numbers = "chesee"})]])
   end)
 end
 
@@ -78,7 +78,7 @@ end
 
 T["valid_options.boolean"] = function()
   ne(function()
-    child.lua([[P.setup({line_numbers = false})]])
+    child.lua([[P.setup({show_line_numbers = false})]])
   end)
 end
 
