@@ -2,7 +2,7 @@ local M = {}
 
 local function is_array(...)
   if vim.fn.has("nvim-0.10") == 1 then
-    return vim.tbl_isarray(...)
+    return vim.isarray(...)
   else
     return vim.tbl_islist(...)
   end
@@ -80,7 +80,7 @@ M.parse_options = function(opts)
 end
 
 local function populate_cmd(cmd, args, tbl, prefix)
-  for k,v in pairs(tbl) do
+  for k, v in pairs(tbl) do
     -- handle margin and padding separately as tables
     if k == "margin" or k == "padding" then
       if type(v) == "table" then
@@ -89,7 +89,7 @@ local function populate_cmd(cmd, args, tbl, prefix)
       end
     -- table options ('border', 'font', 'shadow')
     elseif type(v) == "table" and not is_array(v) then
-      populate_cmd(cmd, args, v, prefix .. k .. '.')
+      populate_cmd(cmd, args, v, prefix .. k .. ".")
     -- handle anything that is not the command or language option
     elseif k ~= "command" and k ~= "language" then
       table.insert(cmd, "--" .. prefix .. string.gsub(k, "_", "-"))
@@ -115,7 +115,7 @@ M.get_arguments = function(args, options)
   local cmd = {}
 
   table.insert(cmd, options.command)
-  populate_cmd(cmd, args, options, '')
+  populate_cmd(cmd, args, options, "")
 
   return cmd
 end
