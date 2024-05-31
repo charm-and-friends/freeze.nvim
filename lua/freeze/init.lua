@@ -166,9 +166,9 @@ M.start = function(args, options)
   -- run the command and get the output
   local ret = vim.fn.system(cmd, lines)
   if string.find(ret, "WROTE") then
-    return vim.notify("File saved to" .. string.sub(ret, 8), vim.log.levels.INFO, { title = "charm-freeze.nvim" })
+    return vim.notify("File saved to" .. string.sub(ret, 8), vim.log.levels.INFO, { title = "freeze.nvim" })
   else
-    return vim.notify("freeze returned: " .. ret, vim.log.levels.WARN, { title = "charm-freeze.nvim" })
+    return vim.notify("freeze returned: " .. ret, vim.log.levels.WARN, { title = "freeze.nvim" })
   end
 end
 

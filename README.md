@@ -1,5 +1,5 @@
 <p align="center">
-    <h2 align="center">charm-freeze.nvim</h3>
+    <h2 align="center">freeze.nvim</h3>
 </p>
 
 <p align="center">
@@ -14,9 +14,9 @@
 
 ```lua
 {
-  'isabelroses/charm-freeze.nvim',
+  'charm-community/freeze.nvim',
   config = function()
-    require('charm-freeze').setup({
+    require('freeze').setup({
         command = "freeze",
         output = function
             return "./" .. os.date("%Y-%m-%d") .. "_freeze.png"
@@ -39,6 +39,6 @@ vim.api.nvim_set_keymap('v', '<leader>sc', '<cmd>Freeze<cr>', {})
 
 This project is heavily inspired by [nvim-silicon](https://github.com/michaelrommel/nvim-silicon).
 
-This also would not be possible without [charmbracelet/freeze][freeze].
+This would not be possible without [charmbracelet/freeze][freeze].
 
 [freeze]: https://github.com/charmbracelet/freeze

@@ -6,7 +6,7 @@ local T = MiniTest.new_set({
   hooks = {
     pre_case = function()
       child.restart({ "-u", "tests/init.lua" })
-      child.lua([[P = require('charm-freeze')]])
+      child.lua([[P = require('freeze')]])
     end,
     -- Stop once all test cases are finished
     post_once = child.stop,
