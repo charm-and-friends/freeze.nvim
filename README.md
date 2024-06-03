@@ -42,3 +42,17 @@ This project is heavily inspired by [nvim-silicon](https://github.com/michaelrom
 This would not be possible without [charmbracelet/freeze][freeze].
 
 [freeze]: https://github.com/charmbracelet/freeze
+
+---
+
+Part of the [Charm](https://charm.sh) Community.
+
+<a href="https://charm.sh/">
+  <img
+    alt="The Charm logo"
+    width="400"
+    src="https://stuff.charm.sh/charm-badge.jpg"
+  />
+</a>
+
+Charm热爱开源 • Charm loves open source
