@@ -18,9 +18,9 @@
   config = function()
     require('freeze').setup({
         command = "freeze",
-        output = function
+        output = function()
             return "./" .. os.date("%Y-%m-%d") .. "_freeze.png"
-        end
+        end,
         theme = "catppuccin-mocha",
     })
   end
