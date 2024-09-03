@@ -14,7 +14,7 @@
 
 ```lua
 {
-  'charm-community/freeze.nvim',
+  'charm-and-friends/freeze.nvim',
   config = function()
     require('freeze').setup({
         command = "freeze",
