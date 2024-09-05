@@ -27,3 +27,41 @@ jobs:
           nvim --version
           [ ! -d tests ] && exit 0
           tests/./run
+
+  stylua:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Lix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          source-url: https://install.lix.systems/lix/lix-installer-x86_64-linux
+          logger: pretty
+          diagnostic-endpoint: ""
+
+      - name: Run stylua
+        run: |
+          nix develop
+          stylua -c .
+
+  selene:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Lix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          source-url: https://install.lix.systems/lix/lix-installer-x86_64-linux
+          logger: pretty
+          diagnostic-endpoint: ""
+
+      - name: Run selene
+        run: |
+          nix develop
+          selene
