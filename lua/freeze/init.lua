@@ -1,5 +1,6 @@
 local M = {}
 
+---@param ... table
 local function is_array(...)
   if vim.fn.has("nvim-0.10") == 1 then
     return vim.isarray(...)
@@ -43,6 +44,7 @@ M.allowed_opts = {
   },
 }
 
+---@param opts table
 M.parse_options = function(opts)
   local options
 
@@ -79,6 +81,10 @@ M.parse_options = function(opts)
   return options
 end
 
+---@param cmd table
+---@param args table
+---@param tbl table
+---@param prefix string
 local function populate_cmd(cmd, args, tbl, prefix)
   for k, v in pairs(tbl) do
     -- handle margin and padding separately as tables
@@ -111,6 +117,9 @@ local function populate_cmd(cmd, args, tbl, prefix)
 end
 
 -- Generate the command line arguments
+---@param args table
+---@param options table
+---@return table
 M.get_arguments = function(args, options)
   local cmd = {}
 
@@ -120,6 +129,10 @@ M.get_arguments = function(args, options)
   return cmd
 end
 
+-- get lines and format them for the command
+---@param cmdline table
+---@param args table
+---@return table lines, table cmdline
 M.format_lines = function(cmdline, args)
   local begin_line = args.line1 - 1
   local finish_line = args.line2
@@ -144,6 +157,8 @@ M.format_lines = function(cmdline, args)
   return lines, cmdline
 end
 
+---@param args table
+---@param options table
 M.start = function(args, options)
   local lines = nil
 
