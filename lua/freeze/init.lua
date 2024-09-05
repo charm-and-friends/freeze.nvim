@@ -45,6 +45,7 @@ M.allowed_opts = {
   },
 }
 
+-- Parse the options provided by the user and ensure they are valid
 M.parse_options = function(opts)
   local options
 
@@ -84,20 +85,20 @@ end
 -- Populate the command line arguments
 local function populate_cmd(cmd, args, tbl, prefix)
   for k, v in pairs(tbl) do
-    -- handle margin and padding separately as tables
+    -- Handle margin and padding separately as tables
     if k == "margin" or k == "padding" then
       if type(v) == "table" then
         table.insert(cmd, "--" .. prefix .. k)
         table.insert(cmd, table.concat(v, ","))
       end
-    -- table options ('border', 'font', 'shadow')
+    -- Table options ('border', 'font', 'shadow')
     elseif type(v) == "table" and not is_array(v) then
       populate_cmd(cmd, args, v, prefix .. k .. ".")
-    -- handle anything that is not the command or language option
+    -- Handle anything that is not the command or language option
     elseif k ~= "command" and k ~= "language" then
       table.insert(cmd, "--" .. prefix .. string.gsub(k, "_", "-"))
 
-      -- if the value is a function, call it with the args, otherwise just use the value
+      -- If the value is a function, call it with the args, otherwise just use the value
       local value = nil
       if type(v) == "function" then
         value = v(args)
@@ -152,15 +153,15 @@ end
 M.start = function(args, options)
   local lines = nil
 
-  -- start building the base of the command from the options
+  -- Start building the base of the command from the options
   local base_cmdline = M.get_arguments(args, options)
-  -- parse buffer into lines, based on arguments from neovim, reshapes cmdline
+  -- Parse buffer into lines, based on arguments from neovim, reshapes cmdline
   lines, base_cmdline = M.format_lines(base_cmdline, args)
 
   local cmd = vim.tbl_extend("error", base_cmdline, {})
 
-  -- if the user gave us a language lets use it
-  -- else try to get the language from neovim's buffer filetype
+  -- If the user gave us a language lets use it
+  -- Else try to get the language from neovim's buffer filetype
   table.insert(cmd, "--language")
   if options.language then
     table.insert(cmd, options.language)
@@ -168,7 +169,7 @@ M.start = function(args, options)
     table.insert(cmd, vim.bo.filetype)
   end
 
-  -- run the command and get the output
+  -- Run the command and get the output
   local ret = vim.fn.system(cmd, lines)
   if string.find(ret, "WROTE") then
     return vim.notify("File saved to" .. string.sub(ret, 8), vim.log.levels.INFO, { title = "freeze.nvim" })
