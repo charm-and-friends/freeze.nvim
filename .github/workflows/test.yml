@@ -60,4 +60,4 @@ jobs:
           diagnostic-endpoint: ""
 
       - name: Run selene
-        run: nix run nixpkgs#selene
+        run: nix run nixpkgs#selene -- .
