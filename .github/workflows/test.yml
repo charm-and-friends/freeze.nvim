@@ -43,9 +43,7 @@ jobs:
           diagnostic-endpoint: ""
 
       - name: Run stylua
-        run: |
-          nix develop
-          stylua -c .
+        run: nix run nixpkgs#stylua -- -c .
 
   selene:
     runs-on: ubuntu-latest
@@ -62,6 +60,4 @@ jobs:
           diagnostic-endpoint: ""
 
       - name: Run selene
-        run: |
-          nix develop
-          selene
+        run: nix run nixpkgs#selene
