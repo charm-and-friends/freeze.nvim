@@ -4,8 +4,9 @@
 
 ---@class FreezeOptions
 ---@field command OptionsType
+---@field open OptionsType
 ---@field config OptionsType
----@field output table<OptionsType>
+---@field output table<OptionsType>|OptionsType
 ---@field window OptionsType
 ---@field padding table<OptionsType>
 ---@field margin table<OptionsType>
@@ -25,4 +26,4 @@
 ---@field get_arguments fun(args: table<string, number>, options: FreezeOptions): table<string>
 ---@field format_lines fun(cmdline: table<string>, args: table<string, number>): table<string>, table<string>
 ---@field start fun(args: table<string, number>, options: FreezeOptions)
----@field setup fun(opts: FreezeOptions)
+---@field setup fun(opts: table<FreezeOptions>)

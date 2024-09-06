@@ -18,6 +18,7 @@ M.required_options = {
 -- We allow the user to provide custom options, if none are provided the command will use its default args
 M.allowed_opts = {
   command = "string",
+  open = "boolean",
   config = "string",
   output = { "string", "function" },
   window = "boolean",
@@ -82,6 +83,31 @@ M.parse_options = function(opts)
   return options
 end
 
+-- Open the generated image based on the OS
+---@param args FreezeOptions
+---@return string
+local function open_by_os(args)
+  local is_win = vim.loop.os_uname().sysname:match("Windows")
+  local is_linux = vim.loop.os_uname().sysname:match("Linux")
+  local output = vim.fn.expand(args.output)
+  local cmd = {}
+  if is_win then
+    table.insert(cmd, "explorer")
+  elseif is_linux then
+    table.insert(cmd, "xdg-open")
+  else
+    table.insert(cmd, "open")
+  end
+  table.insert(cmd, output)
+  return vim.fn.system(cmd)
+end
+
+-- Open the generated image
+---@param args FreezeOptions
+M.open = function(args)
+  open_by_os(args)
+end
+
 -- Populate the command line arguments
 local function populate_cmd(cmd, args, tbl, prefix)
   for k, v in pairs(tbl) do
@@ -95,7 +121,7 @@ local function populate_cmd(cmd, args, tbl, prefix)
     elseif type(v) == "table" and not is_array(v) then
       populate_cmd(cmd, args, v, prefix .. k .. ".")
     -- Handle anything that is not the command or language option
-    elseif k ~= "command" and k ~= "language" then
+    elseif k ~= "command" and k ~= "language" and k ~= "open" then
       table.insert(cmd, "--" .. prefix .. string.gsub(k, "_", "-"))
 
       -- If the value is a function, call it with the args, otherwise just use the value
@@ -195,6 +221,13 @@ M.setup = function(opts)
 
   vim.api.nvim_create_user_command("Freeze", function(args)
     M.start(args, options)
+    -- If the user wants to open the file, open it
+    if args.args == "open" or options.open then
+      if not options.output then
+        options.output = vim.fn.expand("freeze.png")
+      end
+      M.open(options)
+    end
   end, {
     desc = "convert range to code image representation",
     force = false,
