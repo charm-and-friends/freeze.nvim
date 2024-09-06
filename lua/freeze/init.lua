@@ -17,6 +17,7 @@ M.required_options = {
 -- We allow the user to provide custom options, if none are provided the command will use its default args
 M.allowed_opts = {
   command = "string",
+  open = "boolean",
   config = "string",
   output = { "string", "function" },
   window = "boolean",
@@ -79,6 +80,29 @@ M.parse_options = function(opts)
   end
 
   return options
+end
+
+-- Open the generated image based on the OS
+---@param args FreezeOptions
+---@return string
+local function open_by_os(args)
+  local is_win = vim.loop.os_uname().sysname:match("Windows")
+  local output = vim.fn.expand(args.output)
+  local cmd = {}
+  if is_win then
+    table.insert(cmd, "explorer")
+  else
+    -- Maybe we should use xdg-open here too?
+    table.insert(cmd, "open")
+  end
+  table.insert(cmd, output)
+  return vim.fn.system(cmd)
+end
+
+-- Open the generated image
+---@param args FreezeOptions
+M.open = function(args)
+  open_by_os(args)
 end
 
 ---@param cmd table
@@ -193,10 +217,21 @@ M.setup = function(opts)
 
   vim.api.nvim_create_user_command("Freeze", function(args)
     M.start(args, options)
+    -- If the user wants to open the file, open it
+    if args.args == "open" then
+      if not options.output then
+        options.output = vim.fn.expand("freeze.png")
+      end
+      M.open(options)
+    end
   end, {
     desc = "convert range to code image representation",
     force = false,
     range = true,
+    nargs = "*",
+    complete = function()
+      return { "open" }
+    end,
   })
 end
 
