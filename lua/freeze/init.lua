@@ -160,10 +160,21 @@ M.start = function(args, options)
 
   local cmd = vim.tbl_extend("error", base_cmdline, {})
 
+  args = args.fargs or {}
+  local args_list = {}
+  -- Parse the arguments into a table
+  for _, v in ipairs(args) do
+    local key = vim.split(v, "=")[1]
+    local value = vim.split(v, "=")[2]
+    args_list[key] = value
+  end
+
   -- If the user gave us a language lets use it
   -- Else try to get the language from neovim's buffer filetype
   table.insert(cmd, "--language")
-  if options.language then
+  if args_list.language then
+    table.insert(cmd, args_list.language)
+  elseif options.language then
     table.insert(cmd, options.language)
   else
     table.insert(cmd, vim.bo.filetype)
@@ -188,6 +199,21 @@ M.setup = function(opts)
     desc = "convert range to code image representation",
     force = false,
     range = true,
+    nargs = "*",
+    complete = function(_, line)
+      local opts_list = vim.tbl_keys(M.allowed_opts)
+      local l = vim.split(line, "%s+")
+      -- Remove `command` from the list of options
+      for i, v in ipairs(opts_list) do
+        if v == "command" then
+          table.remove(opts_list, i)
+        end
+      end
+      table.sort(opts_list)
+      return vim.tbl_filter(function(opt)
+        return vim.startswith(opt, l[#l])
+      end, opts_list)
+    end,
   })
 end
 
