@@ -119,7 +119,7 @@ local function populate_cmd(cmd, args, tbl, prefix)
     elseif type(v) == "table" and not is_array(v) then
       populate_cmd(cmd, args, v, prefix .. k .. ".")
     -- Handle anything that is not the command or language option
-    elseif k ~= "command" and k ~= "language" then
+    elseif k ~= "command" and k ~= "language" and k ~= "open" then
       table.insert(cmd, "--" .. prefix .. string.gsub(k, "_", "-"))
 
       -- If the value is a function, call it with the args, otherwise just use the value
@@ -209,7 +209,7 @@ M.setup = function(opts)
   vim.api.nvim_create_user_command("Freeze", function(args)
     M.start(args, options)
     -- If the user wants to open the file, open it
-    if args.args == "open" then
+    if args.args == "open" or options.open then
       if not options.output then
         options.output = vim.fn.expand("freeze.png")
       end
