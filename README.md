@@ -18,6 +18,7 @@
   config = function()
     require('freeze').setup({
         command = "freeze",
+        open = true, -- Open the generated image after running the command
         output = function()
             return "./" .. os.date("%Y-%m-%d") .. "_freeze.png"
         end,
@@ -33,6 +34,12 @@ You might also want to add a keybinding to call the `Freeze` command.
 
 ```lua
 vim.api.nvim_set_keymap('v', '<leader>sc', '<cmd>Freeze<cr>', {})
+```
+
+You can also use the `Freeze` command to open the generated image.
+
+```lua
+vim.api.nvim_set_keymap('n', '<leader>so', '<cmd>Freeze open<cr>', {})
 ```
 
 ### Thanks
