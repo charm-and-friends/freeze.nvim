@@ -88,12 +88,14 @@ end
 ---@return string
 local function open_by_os(args)
   local is_win = vim.loop.os_uname().sysname:match("Windows")
+  local is_linux = vim.loop.os_uname().sysname:match("Linux")
   local output = vim.fn.expand(args.output)
   local cmd = {}
   if is_win then
     table.insert(cmd, "explorer")
+  elseif is_linux then
+    table.insert(cmd, "xdg-open")
   else
-    -- Maybe we should use xdg-open here too?
     table.insert(cmd, "open")
   end
   table.insert(cmd, output)
