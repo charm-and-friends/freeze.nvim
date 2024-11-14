@@ -89,7 +89,12 @@ end
 local function open_by_os(args)
   local is_win = vim.loop.os_uname().sysname:match("Windows")
   local is_linux = vim.loop.os_uname().sysname:match("Linux")
-  local output = vim.fn.expand(args.output)
+  local output
+  if type(args.output) == "function" then
+    output = vim.fn.expand(args.output())
+  else
+    output = vim.fn.expand(args.output)
+  end
   local cmd = {}
   if is_win then
     table.insert(cmd, "explorer")
