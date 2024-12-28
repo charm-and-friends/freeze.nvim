@@ -52,7 +52,7 @@ This would not be possible without [charmbracelet/freeze][freeze].
 
 ---
 
-Part of the [Charm](https://charm.sh) Community.
+Part of the [Charm](https://charm.sh) and Friends.
 
 <a href="https://charm.sh/">
   <img
