@@ -12,15 +12,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install Lix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          source-url: https://install.lix.systems/lix/lix-installer-x86_64-linux
+          logger: pretty
+          diagnostic-endpoint: ""
+
       - name: Install Neovim
-        shell: bash
-        run: |
-          mkdir -p /tmp/nvim
-          wget -q https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage -O /tmp/nvim/nvim.appimage
-          cd /tmp/nvim
-          chmod a+x ./nvim.appimage
-          ./nvim.appimage --appimage-extract
-          echo "/tmp/nvim/squashfs-root/usr/bin/" >> $GITHUB_PATH
+        run: nix profile install nixpkgs#neovim
 
       - name: Run Tests
         run: |
