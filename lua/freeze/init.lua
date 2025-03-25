@@ -107,6 +107,21 @@ local function open_by_os(args)
   return vim.fn.system(cmd)
 end
 
+-- Normalise the filetype
+---@param ft string
+---@return string
+local function normalise_ft(ft)
+  -- TODO: add proper nested language support
+  -- https://github.com/charmbracelet/freeze/pull/79
+  if ft == "typescriptreact" then
+    return "typescript"
+  elseif ft == "markdown.mdx" then
+    return "markdown"
+  end
+
+  return ft
+end
+
 -- Open the generated image
 ---@param args FreezeOptions
 M.open = function(args)
@@ -208,7 +223,8 @@ M.start = function(args, options)
   elseif options.language then
     table.insert(cmd, options.language)
   else
-    table.insert(cmd, vim.bo.filetype)
+    local ft = normalise_ft(vim.bo.filetype)
+    table.insert(cmd, ft)
   end
 
   -- Run the command and get the output
